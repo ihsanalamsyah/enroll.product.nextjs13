@@ -373,8 +373,8 @@ export default function CartComponent(){
                             <p className="font-bold text-base">Pilih Semua</p>
                             {cartProducts.length > 0 ? 
                             (<p className="font-bold text-base cursor-pointer" onClick={deleteAllCarts}>Hapus</p>) 
-                            : (<p className="font-bold text-gray-400 text-base">Hapus</p>)}
-                            
+                            : 
+                            (<p className="font-bold text-gray-400 text-base">Hapus</p>)}
                         </div>
                     </div>
                     <div className="divider"></div>
