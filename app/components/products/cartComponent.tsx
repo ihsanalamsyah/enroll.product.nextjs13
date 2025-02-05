@@ -54,7 +54,7 @@ async function GetAllCart(token: string, email: string):Promise<Cart[]> {
       console.error('Error fetching data:', error);
     }
     return carts;
-};
+}
 
 async function CheckoutProduct(token:string, carts:Cart[], email:string):Promise<boolean>{
     let result:boolean = false;
@@ -82,16 +82,9 @@ async function CheckoutProduct(token:string, carts:Cart[], email:string):Promise
 export default function CartComponent(){
     const [modal, setModal] = useState(false);
     const [isMutating, setIsMutating] = useState(false);
-    const [quantities, setQuantities] = useState<number[][]>([]);
-    const [mapUserProducts, setMapUserProducts] = useState<MapUserProduct[]>([]);
     const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
-    const [products, setProducts] = useState<any>([]);
-    const [checkboxCategory, setCheckboxCategory] = useState<boolean>(true);
     const [checkboxCategoryHP, setCheckboxCategoryHP] = useState<boolean>(true);
     const [checkboxCategoryVid, setCheckboxCategoryVid] = useState<boolean>(true);
-    const [checkboxProduct, setCheckboxProduct] = useState<boolean>(true);
-    const [checkboxHP, setCheckboxHP] = useState<boolean>(true);
-    const [checkboxVid, setCheckboxVid] = useState<boolean>(true);
     useEffect(()=>{    
         const fetchData =  async ()=>{
             const token = getCookie("token");
@@ -334,6 +327,7 @@ export default function CartComponent(){
         return stringPrice;
     }
     async function buyProduct(){
+        setIsMutating(true);
         const token = getCookie("token")!;
         const email = getCookie("email")!;
         const filterCarts = cartProducts.flatMap(x=> x.carts.filter(c=> c.checkbox == true)) ?? [];
@@ -355,6 +349,7 @@ export default function CartComponent(){
             }); 
             setCartProducts([]);
             setCartProducts(initialCartProducts);
+            setIsMutating(false);
             setModal(!modal);
         }
         
