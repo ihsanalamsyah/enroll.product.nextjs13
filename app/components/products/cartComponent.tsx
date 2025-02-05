@@ -6,13 +6,6 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { getCookie } from '@/utils/cookies';
 
 const route = process.env.NEXT_PUBLIC_ROUTE;
-type Data={
-    id: number,
-    name: string,
-    category: string,
-    price: number,
-    checkbox: boolean
-}
 
 async function DeleteCart(token: string, carts:Cart[], email:string):Promise<boolean>{
     let result:boolean = false;
@@ -117,26 +110,8 @@ export default function CartComponent(){
                     initialCartProducts.push(newCartProduct);
                 }
             });
-            const datas:Data[] = [
-                { id: 1, name: "Product 1", category: "Handphone", price:10000, checkbox: true },
-                { id: 2, name: "Product 2", category: "Handphone", price:10000, checkbox: true},
-                { id: 3, name: "Product 3", category: "Video", price:10000, checkbox: true},
-                { id: 4, name: "Product 4", category: "Video", price:10000, checkbox: true},
-            ];
-           
-           
-            setCartProducts([]);
-        
-            // datas.forEach(data => {
-            //     const findCategory = updatedCartProducts.some(x=> x.category == data.category)
-            //     if (!findCategory) {
-            //         const newCartProduct: CartProduct = {
-            //             category: data.category,
-            //             datas: datas.filter((item) => item.category === data.category),
-            //         };
-            //         updatedCartProducts.push(newCartProduct);
-            //     }
-            // });
+                      
+            setCartProducts([]);       
             setCartProducts(initialCartProducts);
         }
         fetchData();
@@ -288,9 +263,10 @@ export default function CartComponent(){
         }
     }
     async function onDeleteCart(dataID:number){
+        let updatedCartProducts = [...cartProducts];
         const token = getCookie("token")!;
         const email = getCookie("email")!;
-        const findCart = cartProducts.flatMap(x=> x.carts.filter(c=> c.cart_id == dataID)) ?? [];
+        const findCart = updatedCartProducts.flatMap(x=> x.carts.filter(c=> c.product_id == dataID)) ?? [];
         const result:boolean = await DeleteCart(token, findCart, email);
         if (result) {
             let updatedCartProducts:CartProduct[] = [];
@@ -315,7 +291,31 @@ export default function CartComponent(){
         
     }
     async function deleteAllCarts(){
-
+        let updatedCartProducts = [...cartProducts];
+        const token = getCookie("token")!;
+        const email = getCookie("email")!;
+        const filterCarts = updatedCartProducts.flatMap(x=> x.carts.filter(c=> c.checkbox == true)) ?? [];
+        const result:boolean = await DeleteCart(token, filterCarts, email);
+        if (result) {
+            let updatedCartProducts:CartProduct[] = [];
+            let getCarts:Cart[] = [];
+            getCarts = await GetAllCart(token!, email!);
+            getCarts.every(x=> x.checkbox = true);
+            getCarts.forEach(getCart => {
+                const findCategory = updatedCartProducts.some(x=> x.category == getCart.products.category!)
+                if (!findCategory) {
+                    const newCartProduct: CartProduct = {
+                        category: getCart.products.category!,
+                        carts: getCarts.filter((item) => item.products.category === getCart.products.category!),
+                    };
+                    updatedCartProducts.push(newCartProduct);
+                }
+            });
+            setCartProducts([]);
+            
+            setCartProducts(updatedCartProducts);
+            totalPrice();
+        }
     }
     function totalPrice():string{
         let totalPrice:number = 0;
@@ -344,7 +344,7 @@ export default function CartComponent(){
             getCarts = await GetAllCart(token!, email!);
             getCarts.every(x=> x.checkbox = true);
             getCarts.forEach(getCart => {
-                const findCategory = initialCartProducts.some(x=> x.category ==getCart.products.category!)
+                const findCategory = initialCartProducts.some(x=> x.category == getCart.products.category!)
                 if (!findCategory) {
                     const newCartProduct: CartProduct = {
                         category: getCart.products.category!,
@@ -371,7 +371,10 @@ export default function CartComponent(){
                         </div>
                         <div className="flex w-full justify-between">
                             <p className="font-bold text-base">Pilih Semua</p>
-                            <p className="font-bold text-gray-400 text-base">Hapus</p>
+                            {cartProducts.length > 0 ? 
+                            (<p className="font-bold text-base cursor-pointer" onClick={deleteAllCarts}>Hapus</p>) 
+                            : 
+                            (<p className="font-bold text-gray-400 text-base">Hapus</p>)}
                         </div>
                     </div>
                     <div className="divider"></div>
@@ -434,7 +437,7 @@ export default function CartComponent(){
                                                         <button className="btn btn-sm join-item "><p className='text-sm'>{data.quantity}</p></button>
                                                         <button className="btn btn-sm join-item " onClick={() => handlePlus(data.product_id)} disabled={data.quantity === data.products.quantity}><p className='text-sm'>+</p></button>
                                                     </div>
-                                                    <DeleteOutlineRoundedIcon  className="text-gray-400 mx-2" onClick={() => onDeleteCart(data.product_id)} />
+                                                    <DeleteOutlineRoundedIcon  className="text-gray-400 mx-2 cursor-pointer" onClick={() => onDeleteCart(data.product_id)} />
                                                 </div>
                                             </div>
                                         </div>

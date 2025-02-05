@@ -1,27 +1,28 @@
 
 # PRODUCT NEXT 13
+Menyediakan Product yang dapat dibeli. Product seperti Handphone dan Video. 
 
-Sebuah website product berupa akses video dan pembelian item.
-Mempunyai dashboard untuk Admin.
-Mempunyai validasi berupa, video hanya bisa diakses kurang dari 3 hari setelah pembelian video.
+Pembelian video hanya berlaku selama tiga hari dari hari pembelian, setelah itu perlu subscription kembali. 
 
-Technology yang digunakan:
-- NextJS
+Untuk analisis terdapat analytical dashboard yang dapat diakses oleh role Admin. 
+
+Teknologi yang digunakan:
 - TypeScript
-- DaisyUI (Component Framework)
-- Tailwind (CSS)
+- NextJS
+- DaisyUI
+- Tailwind
 - MUI Icons (Icon)
 - Supabase (PostgreSQL)
-- Token (JWT)
+- PostgreSQL
 - Vercel
 
-Website dapat diakses dengan alamat url sebagai berikut:
+Website kami di deploy dengan bantuan vercel. 
+
+Alamat url website kami adalah sebagai berikut:
 
 https://product-nextjs13.vercel.app/
 
-Thank you Terima Kasih
+Thank you
 =======
-
-Ada user untuk testing role-nya User
-email: usertesting021090@gmail.com
-password: 123456
+Notes:
+Jika tidak ingin SignUp, kita mempunyai user untuk testing email: usertesting021090@gmail.com password: 123456
